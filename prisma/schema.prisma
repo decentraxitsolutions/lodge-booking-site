@@ -1,8 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,12 +9,154 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  GUEST
+  CUSTOMER
+  RECEPTION_STAFF
+  ADMIN
+}
+
+enum RoomStatus {
+  AVAILABLE
+  BOOKED
+  MAINTENANCE
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CHECKED_IN
+  CHECKED_OUT
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  UPI
+  CARD
+  NET_BANKING
+  RAZORPAY
+  CASH
+}
+
+enum GalleryCategory {
+  ROOMS
+  BUILDING
+  RECEPTION
+  PARKING
+  TEMPLE_VIEW
+  DINING
+  BATHROOMS
+}
+
 model User {
   id        String   @id @default(uuid())
   clerkId   String   @unique
   email     String   @unique
   name      String?
+  phone     String?
+  role      Role     @default(CUSTOMER)
   imageUrl  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  bookings  Booking[]
+  reviews   Review[]
+}
+
+model Room {
+  id          String     @id @default(uuid())
+  roomNumber  String     @unique
+  roomType    String     // e.g. "Standard Room", "Deluxe Room", "Family Room", "Dormitory"
+  description String
+  capacity    Int
+  price       Float      // Base price per night
+  amenities   String[]   // Array of amenities
+  status      RoomStatus @default(AVAILABLE)
+  images      String[]   // Array of image URLs
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  bookings    Booking[]
+}
+
+model Booking {
+  id            String        @id @default(uuid())
+  bookingNumber String        @unique
+  userId        String
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roomId        String
+  room          Room          @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  checkIn       DateTime
+  checkOut      DateTime
+  adults        Int
+  children      Int
+  amount        Float
+  paymentStatus PaymentStatus @default(PENDING)
+  bookingStatus BookingStatus @default(PENDING)
+  specialRequest String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  payments      Payment[]
+}
+
+model Payment {
+  id            String        @id @default(uuid())
+  bookingId     String
+  booking       Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  amount        Float
+  paymentMethod PaymentMethod
+  transactionId String?
+  status        PaymentStatus @default(PENDING)
+  createdAt     DateTime      @default(now())
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating    Int
+  review    String
+  approved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Gallery {
+  id        String          @id @default(uuid())
+  image     String
+  title     String?
+  category  GalleryCategory
+  createdAt DateTime        @default(now())
+}
+
+model FAQ {
+  id        String   @id @default(uuid())
+  question  String
+  answer    String
+  createdAt DateTime @default(now())
+}
+
+model Blog {
+  id        String   @id @default(uuid())
+  title     String
+  slug      String   @unique
+  content   String
+  image     String?
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ContactMessage {
+  id        String   @id @default(uuid())
+  name      String
+  phone     String
+  email     String
+  message   String
+  createdAt DateTime @default(now())
 }

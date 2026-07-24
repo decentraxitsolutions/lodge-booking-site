@@ -1,22 +1,18 @@
 // app/components/HeaderComponents/Header.jsx
-// Server Component — no "use client" directive. Mirrors the same split
-// used in HeroComponents: this file owns static content (nav links, logo
-// copy) and hands it to the interactive client half, which is where Clerk
-// and scroll listeners live (both need the browser).
-
 import { checkUser } from "@/lib/checkUser";
 import HeaderClient from "./HeaderClient";
 
 const NAV_LINKS = [
-    { label: "Rooms", href: "/rooms" },
-    { label: "The lodge", href: "/#gallery" },
-    { label: "Trails", href: "/trails" },
-    { label: "Journal", href: "/journal" },
+    { labelKey: "nav.rooms", href: "/rooms" },
+    { labelKey: "nav.gallery", href: "/gallery" },
+    { labelKey: "nav.facilities", href: "/facilities" },
+    { labelKey: "nav.about", href: "/about" },
+    { labelKey: "nav.contact", href: "/contact" },
 ];
 
 const BRAND = {
-    name: "Ridgeline",
-    subline: "Lodge",
+    name: "श्री साई विठ्ठल",
+    subline: "भक्त निवास",
 };
 
 export default async function Header() {

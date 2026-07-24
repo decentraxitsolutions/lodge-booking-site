@@ -1,289 +1,233 @@
 "use client";
 
-// app/components/HeroComponents/HeroClient.jsx
-// Client Component — owns everything that needs the browser: scroll-driven
-// reveals, the booking form's local state, and interactive handlers.
-// Receives all copy/content as props from the server-rendered Hero.jsx.
-
-import { useEffect, useRef, useState, useCallback } from "react";
-import { ArrowRight, CalendarDays, Users2, Quote } from "lucide-react";
+import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { CalendarDays, Users2, ArrowRight, ShieldCheck, HeartHandshake, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-    Card,
-    CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { useTranslation } from "@/lib/LanguageContext";
 
-/**
- * Signature element: a hand-drawn topographic contour line used as the
- * section divider throughout the hero. It's not decoration — the lodge
- * sits on a ridge, so "elevation lines" separating each section is the
- * one visual idea this page repeats and is remembered by.
- */
-function ContourDivider({ elevationLabel }) {
-    return (
-        <div className="relative h-16 w-full overflow-hidden" aria-hidden="true">
-            <svg
-                viewBox="0 0 1200 64"
-                preserveAspectRatio="none"
-                className="h-full w-full"
-            >
-                <path
-                    d="M0,32 C120,10 180,54 300,32 C420,10 480,54 600,30 C720,8 800,50 900,30 C1000,12 1100,48 1200,28"
-                    fill="none"
-                    stroke="#6E7B5E"
-                    strokeWidth="1.25"
-                    strokeOpacity="0.55"
-                />
-                <path
-                    d="M0,42 C140,24 220,58 340,40 C460,22 540,58 660,38 C780,20 860,54 980,36 C1060,24 1140,44 1200,34"
-                    fill="none"
-                    stroke="#6E7B5E"
-                    strokeWidth="1"
-                    strokeOpacity="0.3"
-                />
-            </svg>
-            {elevationLabel ? (
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 font-mono text-[10px] tracking-widest text-[#6E7B5E]">
-                    {elevationLabel}
-                </span>
-            ) : null}
-        </div>
-    );
-}
+export default function HeroClient() {
+    const { t } = useTranslation();
+    const router = useRouter();
 
-/** Small helper: fades + rises a section into view once, on first scroll-into-viewport. */
-function useRevealOnScroll() {
-    const ref = useRef(null);
-    const [visible, setVisible] = useState(false);
-
-    useEffect(() => {
-        const node = ref.current;
-        if (!node) return;
-
-        // Respect reduced-motion users by just showing content immediately.
-        const prefersReduced = window.matchMedia(
-            "(prefers-reduced-motion: reduce)"
-        ).matches;
-        if (prefersReduced) {
-            setVisible(true);
-            return;
-        }
-
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    setVisible(true);
-                    observer.disconnect();
-                }
-            },
-            { threshold: 0.2 }
-        );
-        observer.observe(node);
-        return () => observer.disconnect();
-    }, []);
-
-    return { ref, visible };
-}
-
-function RevealSection({ as: Tag = "div", className = "", children, ...rest }) {
-    const { ref, visible } = useRevealOnScroll();
-    return (
-        <Tag
-            ref={ref}
-            className={`transition-all duration-700 ease-out ${visible ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
-                } ${className}`}
-            {...rest}
-        >
-            {children}
-        </Tag>
-    );
-}
-
-export default function HeroClient({
-    content,
-    bookingDefaults,
-    highlights,
-    closingQuote,
-}) {
     const [checkIn, setCheckIn] = useState("");
     const [checkOut, setCheckOut] = useState("");
     const [guests, setGuests] = useState(2);
-    const [submitting, setSubmitting] = useState(false);
 
-    const handleCheckAvailability = useCallback(
-        async (e) => {
-            e.preventDefault();
-            if (!checkIn || !checkOut) return;
-            setSubmitting(true);
-            try {
-                // Wire this up to your booking/availability API route, e.g.:
-                // await fetch("/api/availability", { method: "POST", body: JSON.stringify({ checkIn, checkOut, guests }) });
-                console.log("Checking availability", { checkIn, checkOut, guests });
-            } finally {
-                setSubmitting(false);
-            }
+    const handleSearch = useCallback((e) => {
+        e.preventDefault();
+        if (!checkIn || !checkOut) return;
+        // Redirect to rooms page with query parameters
+        router.push(`/rooms?checkIn=${checkIn}&checkOut=${checkOut}&guests=${guests}`);
+    }, [checkIn, checkOut, guests, router]);
+
+    // Highlights list
+    const highlights = [
+        {
+            key: "cleanRooms",
+            title: "स्वच्छ खोल्या / Clean Rooms",
+            desc: "भाविकांसाठी उत्तम आणि नियमितपणे निर्जंतुक केलेल्या स्वच्छ खोल्या.",
+            icon: ShieldCheck
         },
-        [checkIn, checkOut, guests]
-    );
+        {
+            key: "location",
+            title: "मंदिराजवळ / Nearby Temple",
+            desc: "विठ्ठल रुक्मिणी मंदिरापासून फक्त ५ मिनिटांच्या अंतरावर सोयीस्कर जागा.",
+            icon: MapPin
+        },
+        {
+            key: "hospitality",
+            title: "२४ तास सेवा / 24x7 Service",
+            desc: "भक्तांच्या सेवेसाठी आमचे कर्मचारी चोवीस तास तत्पर आहेत.",
+            icon: HeartHandshake
+        }
+    ];
 
     return (
-        <div className="bg-[#F0E9D8] font-body text-[#2A2118]">
-            {/* ---------- 1. Opening banner ---------- */}
+        <div className="bg-[#FFF8E7] text-[#374151] font-sans">
+            {/* 1. Hero Banner */}
             <section
-                id="hero-top"
-                className="relative flex min-h-[92vh] w-full flex-col justify-end overflow-hidden bg-[#152018] text-[#F0E9D8]"
+                className="relative flex min-h-[90vh] w-full flex-col justify-center overflow-hidden bg-gradient-to-br from-[#1F1914] via-[#2A1E17] to-[#1F1914] text-white"
             >
-                <div
-                    className="absolute inset-0 bg-cover bg-center opacity-60"
-                    style={{ backgroundImage: `url(${content.backgroundImage})` }}
-                    role="img"
-                    aria-label={content.backgroundAlt}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0F1712] via-[#0F1712]/40 to-transparent" />
+                {/* Decorative background accent */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(212,175,55,0.08),transparent_45%)]" />
+                
+                {/* Temple Arch Silhouette Accent */}
+                <div className="absolute top-10 right-10 opacity-5 pointer-events-none select-none max-w-sm w-full hidden md:block">
+                    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" className="w-full text-[#D4AF37]">
+                        <path d="M10 90 C 10 30, 90 30, 90 90" strokeWidth="2" />
+                        <path d="M20 90 C 20 40, 80 40, 80 90" strokeWidth="1" />
+                        <circle cx="50" cy="30" r="4" fill="currentColor" />
+                    </svg>
+                </div>
 
-                <div className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-20 pt-40 sm:px-10">
-                    <p className="mb-4 font-mono text-xs uppercase tracking-[0.25em] text-[#C97A3D]">
-                        {content.eyebrow}
-                    </p>
-                    <h1 className="max-w-3xl font-display text-5xl leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
-                        {content.headline}
-                    </h1>
-                    <p className="mt-6 max-w-xl text-base leading-relaxed text-[#F0E9D8]/85 sm:text-lg">
-                        {content.subhead}
-                    </p>
+                <div className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-24 pt-32 sm:px-10 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                    
+                    {/* Left Column: Welcome details */}
+                    <div className="space-y-6 text-left">
+                        <p className="font-serif text-sm sm:text-base font-semibold uppercase tracking-[0.25em] text-[#D4AF37]">
+                            {t("home.heroEyebrow")}
+                        </p>
+                        <h1 className="font-serif text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl text-[#FFF8E7]">
+                            {t("home.heroTitle")}
+                        </h1>
+                        <p className="text-sm sm:text-base leading-relaxed text-white/80 max-w-lg">
+                            {t("home.heroSub")}
+                        </p>
 
-                    <div className="mt-9 flex flex-wrap items-center gap-4">
-                        <Button
-                            render={
-                                <a
-                                    href={content.primaryCta.href}
-                                    className="bg-[#C97A3D] text-[#F0E9D8] hover:bg-[#B36A31]"
-                                />
-                            }
-                            size="lg"
-                            nativeButton={false}
-                        >
-                            {content.primaryCta.label}
-                            <ArrowRight className="ml-2 h-4 w-4" />
-                        </Button>
-                        <Button
-                            render={
-                                <a
-                                    href={content.secondaryCta.href}
-                                    className="text-[#F0E9D8] hover:bg-white/10 hover:text-[#F0E9D8]"
-                                />
-                            }
-                            variant="ghost"
-                            size="lg"
-                            nativeButton={false}
-                        >
-                            {content.secondaryCta.label}
-                        </Button>
+                        <div className="flex flex-wrap items-center gap-4 pt-2">
+                            <Button
+                                onClick={() => {
+                                    const section = document.getElementById("book-form");
+                                    if (section) section.scrollIntoView({ behavior: "smooth" });
+                                }}
+                                size="lg"
+                                className="bg-[#F97316] text-white hover:bg-[#EA580C] font-semibold border-b-4 border-[#C2410C]"
+                            >
+                                {t("home.checkAvailability")}
+                                <ArrowRight className="ml-2 h-4 w-4" />
+                            </Button>
+                            <Button
+                                onClick={() => router.push("/gallery")}
+                                variant="ghost"
+                                size="lg"
+                                className="text-[#FFF8E7] hover:bg-white/10 hover:text-white"
+                            >
+                                {t("home.viewGallery")}
+                            </Button>
+                        </div>
                     </div>
+
+                    {/* Right Column: Full building image card */}
+                    <div className="flex justify-center items-center md:justify-end">
+                        <div className="relative aspect-square w-full max-w-[360px] sm:max-w-[400px] overflow-hidden rounded-2xl border-4 border-[#D4AF37] shadow-2xl bg-white transition-all hover:scale-[1.02] duration-300">
+                            <img
+                                src="/hero-bhakt-niwas.jpg"
+                                alt="Shri Sai Vitthal Bhakt Niwas Building"
+                                className="w-full h-full object-cover"
+                            />
+                            {/* Overlay tag */}
+                            <div className="absolute bottom-4 left-4 right-4 bg-[#EA580C]/90 backdrop-blur-sm border border-[#D4AF37]/30 text-[#FFF8E7] py-2 px-3 rounded-xl shadow-lg text-center font-serif font-bold text-xs sm:text-sm">
+                                श्री. साई विठ्ठल भक्त निवास (पंढरपूर)
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </section>
 
-            {/* ---------- 2. Booking widget, overlapping the banner ---------- */}
-            <section id="book" className="relative z-20 mx-auto -mt-12 w-full max-w-4xl px-6 sm:px-10">
-                <RevealSection>
-                    <Card className="border-none bg-[#F0E9D8] shadow-xl">
-                        <CardContent className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-[1fr_1fr_auto_auto] sm:items-end sm:p-8">
+            {/* 2. Check Availability Booking Widget */}
+            <section id="book-form" className="relative z-20 mx-auto -mt-12 w-full max-w-4xl px-6 sm:px-10">
+                <Card className="border border-[#D4AF37]/30 bg-[#FFF8E7] shadow-xl rounded-xl">
+                    <CardContent className="p-6 sm:p-8">
+                        <form onSubmit={handleSearch} className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_1fr_auto_auto] sm:items-end">
+                            
                             <label className="flex flex-col gap-1.5">
-                                <span className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-[#6E7B5E]">
-                                    <CalendarDays className="h-3.5 w-3.5" /> Check in
+                                <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#EA580C]">
+                                    <CalendarDays className="h-4 w-4" /> {t("roomDetails.checkIn")}
                                 </span>
                                 <Input
                                     type="date"
+                                    required
                                     value={checkIn}
                                     onChange={(e) => setCheckIn(e.target.value)}
-                                    className="border-[#6E7B5E]/40 bg-white/60"
+                                    min={new Date().toISOString().split("T")[0]}
+                                    className="border-[#D4AF37]/40 bg-white text-gray-800 h-11 focus:ring-2 focus:ring-[#F97316] rounded-lg"
                                 />
                             </label>
 
                             <label className="flex flex-col gap-1.5">
-                                <span className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-[#6E7B5E]">
-                                    <CalendarDays className="h-3.5 w-3.5" /> Check out
+                                <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#EA580C]">
+                                    <CalendarDays className="h-4 w-4" /> {t("roomDetails.checkOut")}
                                 </span>
                                 <Input
                                     type="date"
+                                    required
                                     value={checkOut}
-                                    min={checkIn || undefined}
+                                    min={checkIn || new Date().toISOString().split("T")[0]}
                                     onChange={(e) => setCheckOut(e.target.value)}
-                                    className="border-[#6E7B5E]/40 bg-white/60"
+                                    className="border-[#D4AF37]/40 bg-white text-gray-800 h-11 focus:ring-2 focus:ring-[#F97316] rounded-lg"
                                 />
                             </label>
 
                             <label className="flex flex-col gap-1.5">
-                                <span className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-[#6E7B5E]">
-                                    <Users2 className="h-3.5 w-3.5" /> Guests
+                                <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#EA580C]">
+                                    <Users2 className="h-4 w-4" /> {t("roomDetails.adults")}
                                 </span>
                                 <Input
                                     type="number"
                                     min={1}
-                                    max={bookingDefaults.guestCap}
+                                    max={10}
                                     value={guests}
                                     onChange={(e) => setGuests(Number(e.target.value))}
-                                    className="w-24 border-[#6E7B5E]/40 bg-white/60"
+                                    className="w-24 border-[#D4AF37]/40 bg-white text-gray-800 h-11 focus:ring-2 focus:ring-[#F97316] rounded-lg text-center font-bold"
                                 />
                             </label>
 
                             <Button
-                                onClick={handleCheckAvailability}
-                                disabled={submitting || !checkIn || !checkOut}
-                                className="h-10 bg-[#152018] text-[#F0E9D8] hover:bg-[#0F1712]"
+                                type="submit"
+                                className="h-11 bg-[#EA580C] text-white hover:bg-[#C2410C] font-bold px-6 shadow-md rounded-lg"
                             >
-                                {submitting ? "Checking…" : "Check availability"}
+                                {t("rooms.availability")}
                             </Button>
-                        </CardContent>
-                    </Card>
-                </RevealSection>
+                            
+                        </form>
+                    </CardContent>
+                </Card>
             </section>
 
-            <ContourDivider elevationLabel="6,200 FT" />
-
-            {/* ---------- 3. Highlights ---------- */}
-            <section id="gallery" className="mx-auto w-full max-w-5xl px-6 py-20 sm:px-10">
-                <RevealSection>
-                    <h2 className="font-display text-3xl text-[#2A2118] sm:text-4xl">
-                        What the days actually look like
-                    </h2>
-                </RevealSection>
-
-                <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
-                    {highlights.map((item, i) => (
-                        <RevealSection
-                            key={item.id}
-                            style={{ transitionDelay: `${i * 100}ms` }}
-                            className="rounded-lg border border-[#6E7B5E]/25 bg-white/40 p-6"
-                        >
-                            <p className="font-mono text-[11px] uppercase tracking-widest text-[#C97A3D]">
-                                {item.label}
-                            </p>
-                            <h3 className="mt-3 font-display text-xl text-[#2A2118]">
-                                {item.title}
-                            </h3>
-                            <p className="mt-2 text-sm leading-relaxed text-[#2A2118]/70">
-                                {item.body}
-                            </p>
-                        </RevealSection>
-                    ))}
+            {/* Quick Info Bar */}
+            <section className="mx-auto w-full max-w-5xl px-6 pt-12 sm:px-10">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 bg-white p-6 rounded-xl border border-[#D4AF37]/15 shadow-sm text-center">
+                    <div>
+                        <h4 className="text-xs font-semibold uppercase text-gray-400 tracking-wider mb-1">{t("home.quickInfo")}</h4>
+                        <p className="text-sm font-medium text-gray-800">{t("home.address")}</p>
+                    </div>
+                    <div className="border-y sm:border-y-0 sm:border-x border-gray-150 py-4 sm:py-0">
+                        <h4 className="text-xs font-semibold uppercase text-gray-400 tracking-wider mb-1">Check-in / Check-out</h4>
+                        <p className="text-sm font-medium text-gray-800">{t("home.checkInTime")} | {t("home.checkOutTime")}</p>
+                    </div>
+                    <div>
+                        <h4 className="text-xs font-semibold uppercase text-gray-400 tracking-wider mb-1">Google Rating</h4>
+                        <p className="text-sm font-bold text-amber-500">★ ★ ★ ★ ★ <span className="text-gray-800 ml-1 text-sm font-medium">({t("home.rating")})</span></p>
+                    </div>
                 </div>
             </section>
 
-            <ContourDivider />
+            {/* 3. Highlights Section */}
+            <section className="mx-auto w-full max-w-5xl px-6 py-20 sm:px-10">
+                <div className="text-center max-w-2xl mx-auto mb-16">
+                    <h2 className="font-serif text-3xl font-bold text-[#EA580C] sm:text-4xl">
+                        {t("home.highlightsTitle")}
+                    </h2>
+                    <p className="mt-4 text-gray-600 text-sm sm:text-base">
+                        {t("home.highlightsSub")}
+                    </p>
+                </div>
 
-            {/* ---------- 4. Closing quote ---------- */}
-            <section className="bg-[#152018] px-6 py-24 text-[#F0E9D8] sm:px-10">
-                <RevealSection className="mx-auto flex max-w-2xl flex-col items-center text-center">
-                    <Quote className="h-6 w-6 text-[#C97A3D]" />
-                    <p className="mt-6 font-display text-2xl leading-snug sm:text-3xl">
-                        “{closingQuote.quote}”
-                    </p>
-                    <p className="mt-5 font-mono text-xs uppercase tracking-widest text-[#F0E9D8]/60">
-                        {closingQuote.attribution}
-                    </p>
-                </RevealSection>
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+                    {highlights.map((item) => {
+                        const Icon = item.icon;
+                        return (
+                            <div
+                                key={item.key}
+                                className="flex flex-col items-center text-center p-8 bg-white border border-[#D4AF37]/20 rounded-xl hover:shadow-lg transition-all duration-300 group hover:-translate-y-1"
+                            >
+                                <div className="p-4 bg-[#FFF8E7] rounded-full text-[#EA580C] group-hover:bg-[#EA580C] group-hover:text-white transition-all">
+                                    <Icon className="h-6 w-6" />
+                                </div>
+                                <h3 className="mt-5 font-serif text-xl font-bold text-gray-850">
+                                    {item.title}
+                                </h3>
+                                <p className="mt-3 text-sm text-gray-600 leading-relaxed">
+                                    {item.desc}
+                                </p>
+                            </div>
+                        );
+                    })}
+                </div>
             </section>
         </div>
     );

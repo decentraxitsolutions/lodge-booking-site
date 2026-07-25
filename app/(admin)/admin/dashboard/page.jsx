@@ -19,26 +19,35 @@ export default async function AdminDashboard() {
   let pendingCount = 0;
 
   try {
-    bookingsCount = await db.booking.count();
+    bookingsCount = await db.booking.count({
+      where: { bookingStatus: { not: "CANCELLED" } }
+    });
     roomsCount = await db.room.count();
     occupiedCount = await db.room.count({ where: { status: "BOOKED" } });
-    pendingCount = await db.booking.count({ where: { paymentStatus: "PENDING" } });
+    pendingCount = await db.booking.count({ 
+      where: { 
+        paymentStatus: "PENDING", 
+        bookingStatus: { not: "CANCELLED" } 
+      } 
+    });
     
     const sumResult = await db.booking.aggregate({
       _sum: { amount: true },
-      where: { paymentStatus: "PAID" }
+      where: { 
+        paymentStatus: "PAID",
+        bookingStatus: { not: "CANCELLED" }
+      }
     });
     revenue = sumResult._sum.amount || 0;
   } catch (err) {
     console.error("Error loading dashboard stats:", err);
   }
 
-  // Fallbacks for initial dry run/preview if DB is empty
   const stats = [
-    { label: "Total Bookings", value: bookingsCount || 12, icon: CalendarCheck, color: "text-blue-600 bg-blue-50" },
-    { label: "Available Rooms", value: (roomsCount - occupiedCount) || 8, icon: Bed, color: "text-emerald-600 bg-emerald-50" },
-    { label: "Total Revenue", value: `₹${revenue || "24,500"}`, icon: IndianRupee, color: "text-amber-600 bg-amber-50" },
-    { label: "Pending Payments", value: pendingCount || 4, icon: AlertCircle, color: "text-red-600 bg-red-50" }
+    { label: "Total Bookings", value: bookingsCount, icon: CalendarCheck, color: "text-blue-600 bg-blue-50" },
+    { label: "Available Rooms", value: Math.max(0, roomsCount - occupiedCount), icon: Bed, color: "text-emerald-600 bg-emerald-50" },
+    { label: "Total Revenue", value: `₹${revenue.toLocaleString()}`, icon: IndianRupee, color: "text-[#EA580C] bg-amber-50" },
+    { label: "Pending Payments", value: pendingCount, icon: AlertCircle, color: "text-red-600 bg-red-50" }
   ];
 
   // Fetch recent check-ins

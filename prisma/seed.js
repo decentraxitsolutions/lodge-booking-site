@@ -19,6 +19,7 @@ async function main() {
   await prisma.fAQ.deleteMany();
   await prisma.blog.deleteMany();
   await prisma.room.deleteMany();
+  await prisma.gallery.deleteMany();
   console.log("Cleared old database records.");
 
   // 2. Seed rooms
@@ -123,6 +124,21 @@ async function main() {
     await prisma.blog.create({ data: b });
   }
   console.log("Successfully seeded blogs.");
+
+  // 5. Seed gallery
+  const galleryItems = [
+    { category: "ROOMS", title: "Standard Room", image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=600" },
+    { category: "ROOMS", title: "Deluxe AC Room", image: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?q=80&w=600" },
+    { category: "ROOMS", title: "Family Room", image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=600" },
+    { category: "BUILDING", title: "Bhakt Niwas Building", image: "/hero-bhakt-niwas.jpg" },
+    { category: "RECEPTION", title: "Lobby & Reception Desk", image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=600" },
+    { category: "PARKING", title: "Spacious Parking Lot", image: "https://images.unsplash.com/photo-1590674899484-d5640e854abe?q=80&w=600" },
+    { category: "TEMPLE_VIEW", title: "Vitthal Temple Gopuram", image: "https://images.unsplash.com/photo-1627894483216-2138af692e32?q=80&w=600" }
+  ];
+  for (const item of galleryItems) {
+    await prisma.gallery.create({ data: item });
+  }
+  console.log("Successfully seeded gallery items.");
 
   console.log("Database seeding completed!");
   await pool.end(); // Gracefully close the connection pool

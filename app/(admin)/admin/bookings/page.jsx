@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Calendar, Search, Check, LogOut, XSquare, Printer } from "lucide-react";
+import { Calendar, Search, Check, LogOut, XSquare, Printer, CreditCard } from "lucide-react";
 
 export default function BookingsManagerPage() {
   const [bookings, setBookings] = useState([]);
@@ -83,6 +83,27 @@ export default function BookingsManagerPage() {
     } catch (err) {
       console.error(err);
       alert("Error updating status.");
+    }
+  };
+
+  const handleUpdatePaymentStatus = async (bookingId, paymentStatus) => {
+    try {
+      const res = await fetch(`/api/bookings/${bookingId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ paymentStatus }),
+      });
+
+      if (res.ok) {
+        alert("Payment status updated successfully!");
+        fetchAllBookings();
+      } else {
+        const err = await res.json();
+        alert(err.error || "Failed to update payment status.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error updating payment status.");
     }
   };
 
@@ -224,6 +245,18 @@ export default function BookingsManagerPage() {
                         >
                           <Printer className="h-4 w-4" />
                         </Button>
+
+                        {/* Toggle payment confirmation action */}
+                        {b.bookingStatus !== "CANCELLED" && (
+                          <Button 
+                            size="icon" 
+                            onClick={() => handleUpdatePaymentStatus(b.id, b.paymentStatus === "PAID" ? "PENDING" : "PAID")}
+                            className={`h-8 w-8 ${b.paymentStatus === "PAID" ? "bg-emerald-50 hover:bg-emerald-100 text-emerald-600" : "bg-amber-50 hover:bg-amber-100 text-amber-600"}`}
+                            title={b.paymentStatus === "PAID" ? "Mark Payment as PENDING" : "Mark Payment as PAID"}
+                          >
+                            <CreditCard className="h-4 w-4" />
+                          </Button>
+                        )}
                         
                         {/* Check-in action */}
                         {b.bookingStatus === "CONFIRMED" && (

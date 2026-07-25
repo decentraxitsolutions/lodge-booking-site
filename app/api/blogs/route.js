@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/prisma";
 
-export async function GET() {
+export async function GET(req) {
   try {
+    const { searchParams } = new URL(req.url);
+    const all = searchParams.get("all") === "true";
+
     const blogs = await db.blog.findMany({
-      where: { published: true },
+      where: all ? {} : { published: true },
       orderBy: { createdAt: "desc" },
     });
     return NextResponse.json(blogs);

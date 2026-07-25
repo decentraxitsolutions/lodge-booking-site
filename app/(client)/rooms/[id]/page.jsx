@@ -4,6 +4,7 @@ import { db } from "@/lib/prisma";
 import { Bed, Users, Calendar, ArrowLeft, ShieldCheck, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { notFound } from "next/navigation";
+import RoomImagesGallery from "@/components/RoomImagesGallery";
 
 // Fallback in case DB query fails or is empty during preview
 const mockRooms = [
@@ -59,13 +60,7 @@ export default async function RoomDetailPage({ params }) {
         </div>
 
         {/* Gallery */}
-        <div className="aspect-video w-full overflow-hidden bg-gray-100 rounded-xl mb-8 border border-[#D4AF37]/20 relative shadow-sm">
-          <img
-            src={room.images?.[0] || "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=1200"}
-            alt={room.roomType}
-            className="w-full h-full object-cover"
-          />
-        </div>
+        <RoomImagesGallery images={room.images} roomType={room.roomType} />
 
         <div className="grid grid-cols-1 md:grid-cols-[1.8fr_1fr] gap-8 items-start">
           

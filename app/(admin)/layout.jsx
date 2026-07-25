@@ -12,7 +12,9 @@ import {
   Image as ImageIcon, 
   Star,
   Home,
-  LogOut
+  LogOut,
+  FileText,
+  Settings
 } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
 
@@ -31,7 +33,12 @@ export default async function AdminLayout({ children }) {
     { label: "Customers", href: "/admin/customers", icon: Users },
     { label: "Gallery Management", href: "/admin/gallery", icon: ImageIcon },
     { label: "Reviews Moderation", href: "/admin/reviews", icon: Star },
+    { label: "Blogs Management", href: "/admin/blogs", icon: FileText },
   ];
+
+  if (user && user.role === "ADMIN") {
+    navItems.push({ label: "Settings", href: "/admin/settings", icon: Settings });
+  }
 
   return (
     <div className="flex min-h-screen bg-[#F9FAFB] text-[#1F2937]">

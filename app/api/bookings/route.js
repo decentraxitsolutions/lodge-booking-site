@@ -55,7 +55,17 @@ export async function POST(req) {
       return NextResponse.json({ error: "User record not found." }, { status: 400 });
     }
 
-    const { roomId, checkIn, checkOut, adults, children, amount, specialRequest, paymentMethod } = await req.json();
+    const { roomId, checkIn, checkOut, adults, children, amount, specialRequest, paymentMethod, name, phone } = await req.json();
+
+    if (name || phone) {
+      await db.user.update({
+        where: { id: user.id },
+        data: {
+          ...(name && { name }),
+          ...(phone && { phone }),
+        }
+      });
+    }
 
     if (!roomId || !checkIn || !checkOut || !adults || !amount || !paymentMethod) {
       return NextResponse.json(
@@ -112,7 +122,7 @@ export async function POST(req) {
         data: {
           bookingId: booking.id,
           amount: parseFloat(amount),
-          paymentMethod,
+          paymentMethod: paymentMethod === "CASH" ? "CASH" : "UPI",
           status: paymentMethod === "CASH" ? "PENDING" : "PAID",
           transactionId: paymentMethod === "CASH" ? "" : `TXN-${Date.now()}`,
         },

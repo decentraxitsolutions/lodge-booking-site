@@ -36,6 +36,18 @@ function BookingCheckoutContent() {
   
   const [submitting, setSubmitting] = useState(false);
   const [successBooking, setSuccessBooking] = useState(null);
+  const [upiId, setUpiId] = useState("saivitthalbhaktniwas@okaxis");
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.upi_id) {
+          setUpiId(data.upi_id);
+        }
+      })
+      .catch((err) => console.error("Error loading settings:", err));
+  }, []);
 
   // Load details from Clerk user when ready
   useEffect(() => {
@@ -93,7 +105,9 @@ function BookingCheckoutContent() {
           children,
           amount,
           specialRequest,
-          paymentMethod
+          paymentMethod,
+          name,
+          phone
         }),
       });
 
@@ -144,8 +158,27 @@ function BookingCheckoutContent() {
             <p><strong>Check-in:</strong> {checkIn}</p>
             <p><strong>Check-out:</strong> {checkOut}</p>
             <p><strong>{t("booking.totalAmount")}:</strong> ₹{totalAmount}</p>
-            <p><strong>Payment Mode:</strong> {paymentMethod === "CASH" ? t("booking.payAtProperty") : "Online Pre-paid (Mock)"}</p>
+            <p><strong>Payment Mode:</strong> {paymentMethod === "CASH" ? t("booking.payAtProperty") : "UPI Online Payment"}</p>
           </div>
+
+          {paymentMethod === "ONLINE" && (
+            <div className="border border-dashed border-[#EA580C]/40 bg-orange-50/30 p-5 rounded-xl space-y-3 flex flex-col items-center">
+              <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">Scan & Pay via UPI</span>
+              <div className="bg-white p-2.5 rounded-lg shadow-sm border border-gray-100">
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(
+                    `upi://pay?pa=${upiId}&pn=Shri%20Sai%20Vitthal%20Bhakt%20Niwas&am=${totalAmount}&cu=INR&tn=Booking%20${successBooking.bookingNumber}`
+                  )}`}
+                  alt="UPI QR Code"
+                  className="w-44 h-44 object-contain"
+                />
+              </div>
+              <p className="text-xs font-bold text-[#EA580C]">Amount: ₹{totalAmount}</p>
+              <p className="text-[10px] text-gray-500 max-w-[280px] text-center leading-normal">
+                Scan using GPay, PhonePe, Paytm, BHIM, or any banking app. Once paid, reception staff will verify the transaction on the system.
+              </p>
+            </div>
+          )}
 
           <p className="text-xs text-emerald-600 font-medium">
             {t("booking.whatsappSent")}

@@ -177,12 +177,32 @@ export default function RoomsManagerPage() {
           <p className="text-sm text-gray-500 mt-1">Manage rooms, pricing tiers, amenities, and photos.</p>
         </div>
         {!isAdding && !editingId && (
-          <Button 
-            onClick={() => setIsAdding(true)}
-            className="bg-[#EA580C] text-white hover:bg-[#C2410C] font-semibold flex items-center gap-1.5"
-          >
-            <Plus className="h-4 w-4" /> Add New Room
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button 
+              onClick={() => {
+                resetForm();
+                setIsAdding(true);
+              }}
+              className="bg-[#EA580C] text-white hover:bg-[#C2410C] font-semibold flex items-center gap-1.5"
+            >
+              <Plus className="h-4 w-4" /> Add New Room
+            </Button>
+            <Button 
+              onClick={() => {
+                resetForm();
+                setRoomType("Banquet Hall");
+                setRoomNumber(`BH-${Math.floor(100 + Math.random() * 900)}`);
+                setPrice(10000);
+                setCapacity(100);
+                setAmenitiesString("Air Conditioning, Sound System, Catering Area, Stage decoration");
+                setDescription("Large spacious air-conditioned banquet hall for weddings, upanayan, family functions, and religious gatherings. Accommodates up to 150-200 guests with dining arrangement.");
+                setIsAdding(true);
+              }}
+              className="bg-[#D4AF37] hover:bg-[#B5922B] text-gray-900 font-bold flex items-center gap-1.5 border border-[#A38627] shadow"
+            >
+              <Plus className="h-4 w-4" /> Add Banquet Hall
+            </Button>
+          </div>
         )}
       </div>
 
@@ -229,10 +249,11 @@ export default function RoomsManagerPage() {
                     <option value="Deluxe AC Room">Deluxe AC Room</option>
                     <option value="Family AC Room">Family AC Room</option>
                     <option value="Dormitory Bed">Dormitory Bed</option>
+                    <option value="Banquet Hall">Banquet Hall</option>
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-gray-600">Price (₹ per night)</label>
+                  <label className="text-xs font-semibold text-gray-600">Price (₹ per night / day)</label>
                   <Input 
                     type="number" 
                     required 
@@ -404,7 +425,7 @@ export default function RoomsManagerPage() {
                     <h3 className="font-serif text-lg font-bold text-gray-800">{room.roomType}</h3>
                     <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mt-0.5">Room Number: {room.roomNumber}</p>
                   </div>
-                  <span className="text-lg font-bold text-[#EA580C]">₹{room.price} <span className="text-xs font-normal text-gray-400">/ night</span></span>
+                  <span className="text-lg font-bold text-[#EA580C]">₹{room.price} <span className="text-xs font-normal text-gray-400">/ {room.roomType === "Banquet Hall" ? "day" : "night"}</span></span>
                 </div>
 
                 <p className="text-xs text-gray-500 leading-relaxed line-clamp-3">

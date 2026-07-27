@@ -54,6 +54,7 @@ enum GalleryCategory {
   TEMPLE_VIEW
   DINING
   BATHROOMS
+  HOTEL
 }
 
 model User {

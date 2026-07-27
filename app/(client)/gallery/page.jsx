@@ -17,7 +17,8 @@ export default function GalleryPage() {
     { code: "BUILDING", label: "इमारत / Building" },
     { code: "RECEPTION", label: "रिसेप्शन / Reception" },
     { code: "PARKING", label: "पार्किंग / Parking" },
-    { code: "TEMPLE_VIEW", label: "मंदिर परिसर / Temple View" }
+    { code: "TEMPLE_VIEW", label: "मंदिर परिसर / Temple View" },
+    { code: "HOTEL", label: "हॉटेल आणि मेनू / Hotel & Menu" }
   ];
 
   // Static/Mock images matching categories for default preview
@@ -30,6 +31,16 @@ export default function GalleryPage() {
     { id: "6", category: "PARKING", title: "Spacious Parking Lot", image: "https://images.unsplash.com/photo-1590674899484-d5640e854abe?q=80&w=600" },
     { id: "7", category: "TEMPLE_VIEW", title: "Vitthal Temple Gopuram", image: "https://images.unsplash.com/photo-1627894483216-2138af692e32?q=80&w=600" }
   ];
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const cat = params.get("category");
+      if (cat) {
+        setActiveCategory(cat.toUpperCase());
+      }
+    }
+  }, []);
 
   useEffect(() => {
     async function fetchGallery() {

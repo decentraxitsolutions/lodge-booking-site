@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { CalendarDays, Users2, ArrowRight, ShieldCheck, HeartHandshake, MapPin } from "lucide-react";
+import { CalendarDays, Users2, ArrowRight, ShieldCheck, HeartHandshake, MapPin, Building, UtensilsCrossed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -19,7 +19,6 @@ export default function HeroClient() {
     const handleSearch = useCallback((e) => {
         e.preventDefault();
         if (!checkIn || !checkOut) return;
-        // Redirect to rooms page with query parameters
         router.push(`/rooms?checkIn=${checkIn}&checkOut=${checkOut}&guests=${guests}`);
     }, [checkIn, checkOut, guests, router]);
 
@@ -47,72 +46,62 @@ export default function HeroClient() {
 
     return (
         <div className="bg-[#FFF8E7] text-[#374151] font-sans">
-            {/* 1. Hero Banner */}
+            {/* 1. Hero Banner with Sai-Vitthal Background */}
             <section
-                className="relative flex min-h-[90vh] w-full flex-col justify-center overflow-hidden bg-gradient-to-br from-[#1F1914] via-[#2A1E17] to-[#1F1914] text-white"
+                className="relative flex min-h-[95vh] w-full flex-col justify-center overflow-hidden text-white bg-cover bg-center"
+                style={{ backgroundImage: "url('/hero-sai-vitthal.jpg')" }}
             >
-                {/* Decorative background accent */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(212,175,55,0.08),transparent_45%)]" />
-                
-                {/* Temple Arch Silhouette Accent */}
-                <div className="absolute top-10 right-10 opacity-5 pointer-events-none select-none max-w-sm w-full hidden md:block">
-                    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" className="w-full text-[#D4AF37]">
-                        <path d="M10 90 C 10 30, 90 30, 90 90" strokeWidth="2" />
-                        <path d="M20 90 C 20 40, 80 40, 80 90" strokeWidth="1" />
-                        <circle cx="50" cy="30" r="4" fill="currentColor" />
-                    </svg>
-                </div>
+                {/* Dark Overlay for visual contrast and readability */}
+                <div className="absolute inset-0 bg-black/55 z-0" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1F1914] via-black/30 to-[#1F1914]/40 z-0" />
 
-                <div className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-24 pt-32 sm:px-10 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                <div className="relative z-10 mx-auto w-full max-w-4xl px-6 pb-20 pt-32 sm:px-10 text-center space-y-8">
                     
-                    {/* Left Column: Welcome details */}
-                    <div className="space-y-6 text-left">
+                    <div className="space-y-4">
                         <p className="font-serif text-sm sm:text-base font-semibold uppercase tracking-[0.25em] text-[#D4AF37]">
                             {t("home.heroEyebrow")}
                         </p>
-                        <h1 className="font-serif text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl text-[#FFF8E7]">
+                        <h1 className="font-serif text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl text-[#FFF8E7] drop-shadow-md">
                             {t("home.heroTitle")}
                         </h1>
-                        <p className="text-sm sm:text-base leading-relaxed text-white/80 max-w-lg">
+                        <p className="text-sm sm:text-base leading-relaxed text-[#FFF8E7]/90 max-w-2xl mx-auto">
                             {t("home.heroSub")}
                         </p>
-
-                        <div className="flex flex-wrap items-center gap-4 pt-2">
-                            <Button
-                                onClick={() => {
-                                    const section = document.getElementById("book-form");
-                                    if (section) section.scrollIntoView({ behavior: "smooth" });
-                                }}
-                                size="lg"
-                                className="bg-[#F97316] text-white hover:bg-[#EA580C] font-semibold border-b-4 border-[#C2410C]"
-                            >
-                                {t("home.checkAvailability")}
-                                <ArrowRight className="ml-2 h-4 w-4" />
-                            </Button>
-                            <Button
-                                onClick={() => router.push("/gallery")}
-                                variant="ghost"
-                                size="lg"
-                                className="text-[#FFF8E7] hover:bg-white/10 hover:text-white"
-                            >
-                                {t("home.viewGallery")}
-                            </Button>
-                        </div>
                     </div>
 
-                    {/* Right Column: Full building image card */}
-                    <div className="flex justify-center items-center md:justify-end">
-                        <div className="relative aspect-square w-full max-w-[360px] sm:max-w-[400px] overflow-hidden rounded-2xl border-4 border-[#D4AF37] shadow-2xl bg-white transition-all hover:scale-[1.02] duration-300">
-                            <img
-                                src="/hero-bhakt-niwas.jpg"
-                                alt="Shri Sai Vitthal Bhakt Niwas Building"
-                                className="w-full h-full object-cover"
-                            />
-                            {/* Overlay tag */}
-                            <div className="absolute bottom-4 left-4 right-4 bg-[#EA580C]/90 backdrop-blur-sm border border-[#D4AF37]/30 text-[#FFF8E7] py-2 px-3 rounded-xl shadow-lg text-center font-serif font-bold text-xs sm:text-sm">
-                                श्री. साई विठ्ठल भक्त निवास (पंढरपूर)
-                            </div>
-                        </div>
+                    {/* New Buttons row: Book Banquet Hall & Shree Sai Vitthal Hotel */}
+                    <div className="flex flex-col sm:flex-row justify-center items-center gap-4 max-w-xl mx-auto pt-2">
+                        <Button
+                            onClick={() => router.push("/rooms?roomType=Banquet Hall")}
+                            size="lg"
+                            className="w-full sm:w-auto bg-[#D4AF37] hover:bg-[#Bfa030] text-[#1F1914] font-bold border-b-4 border-[#A38627] flex items-center justify-center gap-2 px-6 shadow-lg rounded-xl"
+                        >
+                            <Building className="h-4 w-4" />
+                            बँक्वेट हॉल बुकिंग / Book Banquet Hall
+                        </Button>
+                        <Button
+                            onClick={() => router.push("/gallery?category=HOTEL")}
+                            size="lg"
+                            className="w-full sm:w-auto bg-[#1F1914]/80 hover:bg-[#1F1914] text-[#FFF8E7] font-semibold border border-[#D4AF37]/50 flex items-center justify-center gap-2 px-6 backdrop-blur-sm rounded-xl"
+                        >
+                            <UtensilsCrossed className="h-4 w-4 text-[#D4AF37]" />
+                            श्री साई विठ्ठल हॉटेल / Shree Sai Vitthal Hotel
+                        </Button>
+                    </div>
+
+                    {/* Check Availability CTA Button */}
+                    <div className="pt-2">
+                        <Button
+                            onClick={() => {
+                                const section = document.getElementById("book-form");
+                                if (section) section.scrollIntoView({ behavior: "smooth" });
+                            }}
+                            size="lg"
+                            className="bg-[#F97316] text-white hover:bg-[#EA580C] font-semibold border-b-4 border-[#C2410C] rounded-xl px-8"
+                        >
+                            {t("home.checkAvailability")}
+                            <ArrowRight className="ml-2 h-4 w-4" />
+                        </Button>
                     </div>
 
                 </div>
@@ -120,7 +109,7 @@ export default function HeroClient() {
 
             {/* 2. Check Availability Booking Widget */}
             <section id="book-form" className="relative z-20 mx-auto -mt-12 w-full max-w-4xl px-6 sm:px-10">
-                <Card className="border border-[#D4AF37]/30 bg-[#FFF8E7] shadow-xl rounded-xl">
+                <Card className="border border-[#D4AF37]/35 bg-[#FFF8E7] shadow-xl rounded-xl">
                     <CardContent className="p-6 sm:p-8">
                         <form onSubmit={handleSearch} className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_1fr_auto_auto] sm:items-end">
                             

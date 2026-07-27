@@ -366,8 +366,8 @@ function BookingCheckoutContent() {
                     <span className="font-semibold text-gray-800">{checkOut}</span>
                   </div>
                   <div className="flex justify-between items-center text-gray-600">
-                    <span>Nights</span>
-                    <span className="font-semibold text-gray-800">{nights} {nights > 1 ? "Nights" : "Night"}</span>
+                    <span>{room.roomType === "Banquet Hall" ? "Days" : "Nights"}</span>
+                    <span className="font-semibold text-gray-800">{nights} {room.roomType === "Banquet Hall" ? (nights > 1 ? "Days" : "Day") : (nights > 1 ? "Nights" : "Night")}</span>
                   </div>
                   <div className="flex justify-between items-center text-gray-600">
                     <span className="flex items-center gap-1.5"><Users className="h-4 w-4 text-[#EA580C]" /> Capacity Selected</span>
@@ -377,7 +377,7 @@ function BookingCheckoutContent() {
 
                 <div className="space-y-2">
                   <div className="flex justify-between items-center text-sm text-gray-600">
-                    <span>Room Rate (per night)</span>
+                    <span>{room.roomType === "Banquet Hall" ? "Hall Rate (per day)" : "Room Rate (per night)"}</span>
                     <span>₹{room.price}</span>
                   </div>
                   <div className="flex justify-between items-center font-bold text-gray-800 text-lg border-t border-gray-150 pt-3">

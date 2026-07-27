@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Bed, Users, Calendar, ArrowRight } from "lucide-react";
 
 function RoomsListContent() {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -135,6 +135,7 @@ function RoomsListContent() {
                 <option value="Standard AC Room">Standard AC</option>
                 <option value="Deluxe AC Room">Deluxe AC</option>
                 <option value="Family AC Room">Family AC Suite</option>
+                <option value="Banquet Hall">Banquet Hall</option>
               </select>
             </label>
           </CardContent>
@@ -155,7 +156,7 @@ function RoomsListContent() {
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute top-4 right-4 bg-[#EA580C] text-[#FFF8E7] font-bold text-sm px-3.5 py-1.5 rounded-full shadow border border-[#D4AF37]/20">
-                      ₹{room.price} / night
+                      ₹{room.price} / {room.roomType === "Banquet Hall" ? (language === "mr" ? "दिवस" : "day") : (language === "mr" ? "रात्र" : "night")}
                     </div>
                   </div>
                   <div className="p-6 space-y-4">

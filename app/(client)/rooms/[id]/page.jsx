@@ -55,7 +55,9 @@ export default async function RoomDetailPage({ params }) {
           </div>
           <div className="text-left sm:text-right shrink-0">
             <span className="text-xs text-gray-500 font-medium">Starting from</span>
-            <p className="text-3xl font-extrabold text-[#EA580C]">₹{room.price} <span className="text-sm font-normal text-gray-500">/ night</span></p>
+            <p className="text-3xl font-extrabold text-[#EA580C]">
+              ₹{room.price} <span className="text-sm font-normal text-gray-500">/ {room.roomType === "Banquet Hall" ? "day" : "night"}</span>
+            </p>
           </div>
         </div>
 

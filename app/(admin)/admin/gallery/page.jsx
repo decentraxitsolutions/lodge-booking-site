@@ -208,6 +208,7 @@ export default function GalleryManagerPage() {
                     <option value="TEMPLE_VIEW">Temple View</option>
                     <option value="DINING">Dining Area</option>
                     <option value="BATHROOMS">Bathrooms</option>
+                    <option value="HOTEL">Sai Vitthal Hotel & Menu</option>
                   </select>
                 </div>
               </div>

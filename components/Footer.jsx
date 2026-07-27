@@ -14,12 +14,21 @@ export default function Footer() {
         
         {/* Brand Section */}
         <div className="flex flex-col gap-3">
-          <h3 className="font-serif text-xl font-semibold text-[#D4AF37]">
-            श्री साई विठ्ठल भक्त निवास
-          </h3>
-          <p className="text-xs text-[#FFF8E7]/60 font-mono tracking-widest uppercase">
-            Shri Sai Vitthal Bhakt Niwas
-          </p>
+          <div className="flex items-center gap-3">
+            <img 
+              src="/logo.jpg" 
+              alt="Shri Sai Vitthal Brand Logo" 
+              className="h-10 w-10 rounded-full border border-[#D4AF37]/50 shadow-md object-cover"
+            />
+            <div className="flex flex-col">
+              <h3 className="font-serif text-lg font-semibold text-[#D4AF37] leading-tight">
+                श्री साई विठ्ठल भक्त निवास
+              </h3>
+              <p className="text-[10px] text-[#FFF8E7]/60 font-mono tracking-widest uppercase leading-none mt-1">
+                Shri Sai Vitthal Bhakt Niwas
+              </p>
+            </div>
+          </div>
           <p className="text-sm mt-2 text-[#FFF8E7]/70">
             {t("home.footerText")}
           </p>

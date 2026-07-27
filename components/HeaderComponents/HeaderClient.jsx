@@ -36,13 +36,20 @@ export default function HeaderClient({ user, navLinks, brand }) {
             <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 sm:px-10">
                 
                 {/* Logo & Brand */}
-                <Link href="/" className="flex flex-col text-white group">
-                    <span className="font-serif text-lg sm:text-xl font-bold tracking-wide leading-tight text-[#FFF8E7] group-hover:text-[#D4AF37] transition-colors">
-                        {brand.name}
-                    </span>
-                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#FFF8E7]/70 leading-none">
-                        {brand.subline}
-                    </span>
+                <Link href="/" className="flex items-center gap-3 text-white group">
+                    <img 
+                        src="/logo.jpg" 
+                        alt="Shri Sai Vitthal Brand Logo" 
+                        className="h-9 w-9 rounded-full border border-[#D4AF37]/50 shadow-md object-cover transition-transform group-hover:scale-105"
+                    />
+                    <div className="flex flex-col">
+                        <span className="font-serif text-base sm:text-lg font-bold tracking-wide leading-tight text-[#FFF8E7] group-hover:text-[#D4AF37] transition-colors">
+                            {brand.name}
+                        </span>
+                        <span className="font-mono text-[8px] sm:text-[9px] uppercase tracking-[0.2em] text-[#FFF8E7]/70 leading-none mt-0.5">
+                            {brand.subline}
+                        </span>
+                    </div>
                 </Link>
 
                 {/* Desktop Nav Links */}

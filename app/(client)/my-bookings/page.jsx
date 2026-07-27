@@ -117,7 +117,7 @@ export default function MyBookingsPage() {
           </div>
           <div class="footer">
             <p>Thank you for staying at Shri Sai Vitthal Bhakt Niwas. Have a blessed pilgrimage!</p>
-            <p>जय हरी विठ्ठल | श्री स्वामी समर्थ</p>
+            <p>जय हरी विठ्ठल | ओम साई राम</p>
           </div>
         </body>
       </html>

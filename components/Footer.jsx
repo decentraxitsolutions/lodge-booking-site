@@ -118,7 +118,7 @@ export default function Footer() {
 
       <div className="mx-auto max-w-6xl px-6 border-t border-[#D4AF37]/10 mt-10 pt-6 text-center text-xs text-[#FFF8E7]/40 flex flex-col sm:flex-row justify-between items-center gap-4">
         <p>© {new Date().getFullYear()} Shri Sai Vitthal Bhakt Niwas. All Rights Reserved.</p>
-        <p className="font-serif">जय हरी विठ्ठल | श्री स्वामी समर्थ</p>
+        <p className="font-serif">जय हरी विठ्ठल | ओम साई राम</p>
       </div>
     </footer>
   );

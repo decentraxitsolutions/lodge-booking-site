@@ -46,9 +46,65 @@ export default function HeroClient() {
 
     return (
         <div className="bg-[#FFF8E7] text-[#374151] font-sans">
-            {/* 1. Hero Banner with Sai-Vitthal Background */}
+            
+            {/* --- MOBILE LAYOUT: Full background image at top, welcome text & CTAs below --- */}
+            <div className="block md:hidden bg-[#1F1914] text-white">
+                <div className="w-full aspect-[4/3] relative overflow-hidden bg-[#1F1914] border-b border-[#D4AF37]/30">
+                    <img 
+                        src="/hero-sai-vitthal.jpg" 
+                        alt="Shri Sai Vitthal Bhakt Niwas Background" 
+                        className="w-full h-full object-contain"
+                    />
+                    {/* Devotional Overlay tag on the mobile image */}
+                    <div className="absolute bottom-2 left-2 right-2 bg-black/60 backdrop-blur-sm text-[#FFF8E7] py-1 px-2 rounded text-[10px] text-center font-bold">
+                        जय हरी विठ्ठल | ओम साई राम
+                    </div>
+                </div>
+                
+                <div className="p-6 text-center space-y-5 pb-16">
+                    <p className="font-serif text-xs font-semibold uppercase tracking-[0.2em] text-[#D4AF37]">
+                        {t("home.heroEyebrow")}
+                    </p>
+                    <h1 className="font-serif text-3xl font-bold leading-snug text-[#FFF8E7]">
+                        {t("home.heroTitle")}
+                    </h1>
+                    <p className="text-xs leading-relaxed text-[#FFF8E7]/80 max-w-sm mx-auto">
+                        {t("home.heroSub")}
+                    </p>
+                    
+                    {/* Action buttons */}
+                    <div className="flex flex-col gap-3 pt-2">
+                        <Button
+                            onClick={() => router.push("/rooms?roomType=Banquet Hall")}
+                            className="w-full bg-[#D4AF37] hover:bg-[#Bfa030] text-[#1F1914] font-bold border-b-4 border-[#A38627] flex items-center justify-center gap-2 py-3.5 rounded-xl text-xs"
+                        >
+                            <Building className="h-4 w-4 shrink-0" />
+                            बँक्वेट हॉल बुकिंग / Book Banquet Hall
+                        </Button>
+                        <Button
+                            onClick={() => router.push("/gallery?category=HOTEL")}
+                            className="w-full bg-white/10 hover:bg-white/20 text-[#FFF8E7] font-semibold border border-[#D4AF37]/50 flex items-center justify-center gap-2 py-3.5 rounded-xl text-xs"
+                        >
+                            <UtensilsCrossed className="h-4 w-4 text-[#D4AF37] shrink-0" />
+                            श्री साई विठ्ठल हॉटेल / Shree Sai Vitthal Hotel
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                const section = document.getElementById("book-form");
+                                if (section) section.scrollIntoView({ behavior: "smooth" });
+                            }}
+                            className="w-full bg-[#F97316] text-white hover:bg-[#EA580C] font-semibold border-b-4 border-[#C2410C] py-3.5 rounded-xl mt-2 text-xs flex items-center justify-center gap-2"
+                        >
+                            {t("home.checkAvailability")}
+                            <ArrowRight className="h-4 w-4" />
+                        </Button>
+                    </div>
+                </div>
+            </div>
+
+            {/* --- DESKTOP LAYOUT: Centered overlay over full-screen background --- */}
             <section
-                className="relative flex min-h-[95vh] w-full flex-col justify-center overflow-hidden text-white bg-cover bg-center"
+                className="hidden md:flex relative min-h-[95vh] w-full flex-col justify-center overflow-hidden text-white bg-cover bg-center"
                 style={{ backgroundImage: "url('/hero-sai-vitthal.jpg')" }}
             >
                 {/* Dark Overlay for visual contrast and readability */}
@@ -69,12 +125,12 @@ export default function HeroClient() {
                         </p>
                     </div>
 
-                    {/* New Buttons row: Book Banquet Hall & Shree Sai Vitthal Hotel */}
-                    <div className="flex flex-col sm:flex-row justify-center items-center gap-4 max-w-xl mx-auto pt-2">
+                    {/* Action Buttons */}
+                    <div className="flex justify-center items-center gap-4 max-w-xl mx-auto pt-2">
                         <Button
                             onClick={() => router.push("/rooms?roomType=Banquet Hall")}
                             size="lg"
-                            className="w-full sm:w-auto bg-[#D4AF37] hover:bg-[#Bfa030] text-[#1F1914] font-bold border-b-4 border-[#A38627] flex items-center justify-center gap-2 px-6 shadow-lg rounded-xl"
+                            className="bg-[#D4AF37] hover:bg-[#Bfa030] text-[#1F1914] font-bold border-b-4 border-[#A38627] flex items-center justify-center gap-2 px-6 shadow-lg rounded-xl"
                         >
                             <Building className="h-4 w-4" />
                             बँक्वेट हॉल बुकिंग / Book Banquet Hall
@@ -82,7 +138,7 @@ export default function HeroClient() {
                         <Button
                             onClick={() => router.push("/gallery?category=HOTEL")}
                             size="lg"
-                            className="w-full sm:w-auto bg-[#1F1914]/80 hover:bg-[#1F1914] text-[#FFF8E7] font-semibold border border-[#D4AF37]/50 flex items-center justify-center gap-2 px-6 backdrop-blur-sm rounded-xl"
+                            className="bg-[#1F1914]/80 hover:bg-[#1F1914] text-[#FFF8E7] font-semibold border border-[#D4AF37]/50 flex items-center justify-center gap-2 px-6 backdrop-blur-sm rounded-xl"
                         >
                             <UtensilsCrossed className="h-4 w-4 text-[#D4AF37]" />
                             श्री साई विठ्ठल हॉटेल / Shree Sai Vitthal Hotel
@@ -157,7 +213,7 @@ export default function HeroClient() {
 
                             <Button
                                 type="submit"
-                                className="h-11 bg-[#EA580C] text-white hover:bg-[#C2410C] font-bold px-6 shadow-md rounded-lg"
+                                className="h-11 bg-[#EA580C] text-white hover:bg-[#C2410C] font-bold px-6 shadow-md rounded-lg w-full sm:w-auto"
                             >
                                 {t("rooms.availability")}
                             </Button>
@@ -191,7 +247,7 @@ export default function HeroClient() {
                     <h2 className="font-serif text-3xl font-bold text-[#EA580C] sm:text-4xl">
                         {t("home.highlightsTitle")}
                     </h2>
-                    <p className="mt-4 text-gray-600 text-sm sm:text-base">
+                    <p className="mt-4 text-gray-650 text-sm sm:text-base">
                         {t("home.highlightsSub")}
                     </p>
                 </div>
@@ -210,7 +266,7 @@ export default function HeroClient() {
                                 <h3 className="mt-5 font-serif text-xl font-bold text-gray-850">
                                     {item.title}
                                 </h3>
-                                <p className="mt-3 text-sm text-gray-600 leading-relaxed">
+                                <p className="mt-3 text-sm text-gray-650 leading-relaxed">
                                     {item.desc}
                                 </p>
                             </div>
